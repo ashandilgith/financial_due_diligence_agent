@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apex-diligence"
+version = "0.1.0"
+description = "Reproducible quality-of-earnings data packs from a general ledger and bank statements"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["openpyxl>=3.1"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+apex = "apex_diligence.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
