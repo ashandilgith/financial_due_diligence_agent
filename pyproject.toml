@@ -12,6 +12,7 @@ dependencies = ["openpyxl>=3.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+agent = ["anthropic>=0.40"]
 
 [project.scripts]
 apex = "apex_diligence.cli:main"

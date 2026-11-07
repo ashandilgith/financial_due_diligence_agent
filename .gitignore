@@ -6,3 +6,4 @@ demo_output/
 out/
 # Client data never goes in the repo
 data/client/
+analyst_output/

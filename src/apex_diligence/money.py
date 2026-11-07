@@ -61,6 +61,34 @@ def to_cents(value: object) -> int:
     return -cents if negative else cents
 
 
+class Money(int):
+    """An int of cents that is marked as money, so it serialises as "1234.50"."""
+
+    def __repr__(self) -> str:
+        return f"Money({fmt(self)})"
+
+
+def mul(cents: int, rate: Decimal | int) -> int:
+    """cents x rate, rounded half away from zero to whole cents.
+    Matches Excel's ROUND(x, 2), so exported models agree to the centavo."""
+    return int((Decimal(cents) * Decimal(rate)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def ratio(numerator: int, denominator: int, places: int = 6) -> Decimal | None:
+    """numerator / denominator as a Decimal rounded to `places`; None if dividing by zero."""
+    if denominator == 0:
+        return None
+    q = Decimal(10) ** -places
+    return (Decimal(numerator) / Decimal(denominator)).quantize(q, rounding=ROUND_HALF_UP)
+
+
+def money_str(cents: int) -> str:
+    """Cents -> "1234.50" with no separators: unambiguous for machines and models."""
+    sign = "-" if cents < 0 else ""
+    whole, part = divmod(abs(int(cents)), 100)
+    return f"{sign}{whole}.{part:02d}"
+
+
 def to_decimal(cents: int) -> Decimal:
     """Cents -> Decimal currency units, exact (used when writing Excel)."""
     return Decimal(cents) / 100

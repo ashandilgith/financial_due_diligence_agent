@@ -8,7 +8,7 @@ like `mad_multipler` cannot silently fall back to the default.
 from __future__ import annotations
 
 import tomllib
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, fields
 from pathlib import Path
 
 from .money import to_cents

@@ -37,7 +37,7 @@ ACCOUNTS = [
     ("1500", "Equipment", "asset_other"),
     ("1510", "Accumulated depreciation", "asset_other"),
     ("2000", "Accounts payable", "liability_ap"),
-    ("2100", "Bank loan", "liability_other"),
+    ("2100", "Bank loan", "liability_debt"),
     ("3000", "Owner's equity", "equity"),
     ("4000", "Sales", "revenue"),
     ("5000", "Cost of goods sold", "cogs"),

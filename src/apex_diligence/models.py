@@ -7,7 +7,7 @@ accident later in the pipeline.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+
 
 
 @dataclass(frozen=True, order=True)

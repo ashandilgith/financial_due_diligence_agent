@@ -22,6 +22,7 @@ BS_CATEGORIES = [
     "asset_inventory",
     "asset_other",
     "liability_ap",
+    "liability_debt",
     "liability_other",
     "equity",
 ]
@@ -41,6 +42,7 @@ LABELS = {
     "asset_inventory": "Inventory",
     "asset_other": "Other assets",
     "liability_ap": "Accounts payable",
+    "liability_debt": "Financial debt (loans, bonds, leases)",
     "liability_other": "Other liabilities",
     "equity": "Equity",
 }

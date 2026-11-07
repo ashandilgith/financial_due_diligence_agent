@@ -14,7 +14,7 @@ from pathlib import Path
 from . import checks
 from .adjustments import find_candidates
 from .ingest import load_bank, load_decisions, load_gl, load_mapping
-from .models import CheckResult, ReviewedCandidate
+from .models import BankLine, CheckResult, GLLine, ReviewedCandidate
 from .proof_of_cash import CashMonth, proof_of_cash
 from .review import adjustments_by_month, apply_decisions
 from .rules import RuleConfig, load_rules
@@ -90,12 +90,34 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def run(inputs: RunInputs) -> RunResult:
+@dataclass(frozen=True)
+class Loaded:
+    """The validated input data, kept so models and tools can work on it."""
+
+    config: RuleConfig
+    gl: list[GLLine]
+    bank: list[BankLine]
+    mapping: dict[str, str]
+    decisions: dict
+
+
+def load(inputs: RunInputs) -> Loaded:
     config, _ = load_rules(inputs.rules)
-    gl = load_gl(inputs.gl)
-    bank = load_bank(inputs.bank)
-    mapping = load_mapping(inputs.mapping)
-    decisions = load_decisions(inputs.decisions) if inputs.decisions else {}
+    return Loaded(
+        config=config,
+        gl=load_gl(inputs.gl),
+        bank=load_bank(inputs.bank),
+        mapping=load_mapping(inputs.mapping),
+        decisions=load_decisions(inputs.decisions) if inputs.decisions else {},
+    )
+
+
+def run(inputs: RunInputs) -> RunResult:
+    return compute(load(inputs), inputs.company)
+
+
+def compute(data: Loaded, company: str) -> RunResult:
+    config, gl, bank, mapping, decisions = data.config, data.gl, data.bank, data.mapping, data.decisions
 
     gate = checks.blocking_checks(gl, mapping)
     if not all(c.passed for c in gate):
@@ -118,7 +140,7 @@ def run(inputs: RunInputs) -> RunResult:
                     + ", ".join(stale[:5])),
     ]
     return RunResult(
-        company=inputs.company,
+        company=company,
         config=config,
         statements=statements,
         adjustments=adjustments,
